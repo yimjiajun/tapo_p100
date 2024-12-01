@@ -4,8 +4,12 @@ Toggle power application is depending on [Tapo](https://github.com/mihai-dincule
 
 The application is designed to toggle power of the Tapo plug on GUI and CLI, which written in Python.
 
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGQ0i9injvbmzqCHf63vEFeLRz2GB_KmHzaw&s" alt="Tapo P100"/>
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuwCiu13LZRrVWUb4A5m0kUnBhckNyhBAWzg&s" alt="Tapo P105"/>
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGQ0i9injvbmzqCHf63vEFeLRz2GB_KmHzaw&s" alt="Tapo P100" style="width: 45%;"/>
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuwCiu13LZRrVWUb4A5m0kUnBhckNyhBAWzg&s" alt="Tapo P105" style="width: 45%;"/>
+</div>
+
+<br>
 
 * [Toggle Power - Tapo P100](#toggle-power---tapo-p100)
    * [Installation](#installation)
@@ -118,8 +122,10 @@ The application is designed to toggle power of the Tapo plug on GUI and CLI, whi
 
 1. Press the <kbd> Turn On </kbd> or <kbd> Turn Off </kbd> button to toggle the power of the plug.
 
-    <img src="docs/img/remote_plug_power_on.png" alt="toggle power application GUI Power on"/>
-    <img src="docs/img/remote_plug_power_off.png" alt="toggle power application GUI Power off"/>
+<div style="display: flex; justify-content: space-between;">
+    <img src="docs/img/remote_plug_power_on.png" alt="toggle power application GUI Power on" style="width: 45%;"/>
+    <img src="docs/img/remote_plug_power_off.png" alt="toggle power application GUI Power off" style="width: 45%;"/>
+</div>
 
 <br>
 
