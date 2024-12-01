@@ -41,18 +41,18 @@ The application is designed to toggle power of the Tapo plug on GUI and CLI, whi
 
 <br>
 
-1. Execute `toggle_power.py`
+1. Execute `main.py`
 
    GUI:
 
    ```bash
-   python3 toggle_power.py
+   python3 main.py
    ```
 
    CLI:
 
    ```bash
-   python3 toggle_power.py -i
+   python3 main.py -i
    ```
 
 <br>
@@ -68,7 +68,7 @@ The application is designed to toggle power of the Tapo plug on GUI and CLI, whi
 1. Run the in terminal to open CLI UI.
 
     ```bash
-    python3 toggle_power.py -i
+    python3 main.py -i
     ```
 
 1. The UI will pop up after connected all provided plugs.
@@ -115,7 +115,7 @@ The application is designed to toggle power of the Tapo plug on GUI and CLI, whi
 1. open the GUI by running the script.
 
     ```bash
-    python3 toggle_power.py
+    python3 main.py
     ```
 
     ![toggle power application GUI](docs/img/remote_plug_home.png)
@@ -144,7 +144,7 @@ Plug(s) could be added by two ways: (1) CLI or (2) JSON file.
 1. CLI: provide the IP address in command line.
 
     ```bash
-    python3 toggle_power.py --ip "<ip1> <ip2> <ip3>"
+    python3 main.py --ip "<ip1> <ip2> <ip3>"
     ```
 
 1. JSON File: include the IP address in the _~/.ami_ec_remote_plug.json_ file.
@@ -194,7 +194,7 @@ Username and password could be provided in three ways: (1) CLI or (2) JSON file 
 1. CLI: provide the _username_ and _password_ in command line.
 
     ```bash
-    python3 toggle_power.py --username "<username>" --password "<password>"
+    python3 main.py --username "<username>" --password "<password>"
     ```
 
 1. JSON File: include the username and password in the _~/.ami_ec_remote_plug.json_ file.
@@ -217,7 +217,7 @@ Username and password could be provided in three ways: (1) CLI or (2) JSON file 
    > not supported in GUI mode when disabled terminal prompt.
 
     ```bash
-    python3 toggle_power.py
+    python3 main.py
     ```
 
     username and password will be prompted in terminal.
