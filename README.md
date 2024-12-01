@@ -1,4 +1,4 @@
-# Toggle Power - Tapo P100
+# Toggle Power - Tapo Power Plug
 
 Toggle power application is depending on [Tapo](https://github.com/mihai-dinculescu/tapo)[^1]
 
