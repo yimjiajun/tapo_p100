@@ -24,6 +24,7 @@ from ttkthemes import ThemedTk
 
 SUBJECT="AMI EC Plug Control Panel"
 SETUP_FILE = os.path.join(os.path.expanduser('~'), '.ami_ec_remote_plug')
+ICON_FILE = 'ami.png'
 global p100
 global info
 p100 = {}
@@ -108,13 +109,16 @@ class TkinterDevice:
         root.resizable(False, False)
 
         try:
-            icon_file_path = os.path.join(os.path.dirname(__file__), 'ami.png')
+            path = os.path.dirname(__file__)
         except Exception as _:
-            icon_file_path = os.path.join(os.curdir, 'ami.png')
+            path = os.curdir
 
-        if os.path.exists(icon_file_path):
-            icon = PhotoImage(file=icon_file_path)
-            root.iconphoto(True, icon, icon)
+        for path_root, dirs, files in os.walk(path):
+            if ICON_FILE in files:
+                icon_file_path = os.path.join(path_root, ICON_FILE)
+                icon = PhotoImage(file=icon_file_path)
+                root.iconphoto(True, icon, icon)
+                break
 
         frame = ttk.Frame(root)
         # Set background color for the button
