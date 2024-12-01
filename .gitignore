@@ -1,0 +1,4 @@
+book/
+build/
+dist/
+*.spec
