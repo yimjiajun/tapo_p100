@@ -1,6 +1,11 @@
 # Toggle Power - Tapo P100
 
-Toggle power application is depending on [Tapo](https://github.com/mihai-dinculescu/tapo). Some other remote plug is not supporting, please reference other package [Kasa](https://github.com/python-kasa/python-kasa).
+Toggle power application is depending on [Tapo](https://github.com/mihai-dinculescu/tapo)[^1]
+
+The application is designed to toggle power of the Tapo plug on GUI and CLI, which written in Python.
+
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGQ0i9injvbmzqCHf63vEFeLRz2GB_KmHzaw&s" alt="Tapo P100"/>
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuwCiu13LZRrVWUb4A5m0kUnBhckNyhBAWzg&s" alt="Tapo P105"/>
 
 * [Toggle Power - Tapo P100](#toggle-power---tapo-p100)
    * [Installation](#installation)
@@ -11,8 +16,6 @@ Toggle power application is depending on [Tapo](https://github.com/mihai-dincule
       * [Add plug](#add-plug)
       * [Username and Password](#username-and-password)
    * [Generate Executable File](#generate-executable-file)
-
-<br>
 
 ## Installation
 
@@ -243,3 +246,5 @@ Username and password could be provided in three ways: (1) CLI or (2) JSON file 
     ```bash
     find dist/ -name "toggle_power*"
     ```
+
+[^1]: Some other remote plug is not supporting, please reference other package [Kasa](https://github.com/python-kasa/python-kasa).
