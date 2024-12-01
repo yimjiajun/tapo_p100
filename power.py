@@ -20,7 +20,7 @@ from getpass import getpass
 from tapo import ApiClient
 from colorama import Fore, Style, init
 from tkinter import ttk, PhotoImage
-from ttkthemes import ThemedStyle, ThemedTk
+from ttkthemes import ThemedTk
 
 SUBJECT="AMI EC Plug Control Panel"
 SETUP_FILE = os.path.join(os.path.expanduser('~'), '.ami_ec_remote_plug')
@@ -285,23 +285,29 @@ async def register_p10x(info: dict):
     - None
     """
     for ip in info["ip"]:
-        client = ApiClient(info["username"], info["password"])
-        output_message(f"Connecting to {ip} ...")
-        device = await client.p100(ip)
-        device_info = await device.get_device_info()
-        device_name = device_info.to_dict().get("nickname", "Unknown")
+        if any([ip == key for key in p100.keys()]):
+            continue
 
-        p100[ip] = {
-            "name": device_name,
-            "object": device,
-            "action": {
-                    "on": device.on,
-                    "off": device.off,
-                    "info": device.get_device_info,
-                    "usage": device.get_device_usage
-                },
-            "power": device_info.to_dict().get("device_on", False)
-        }
+        try:
+            client = ApiClient(info["username"], info["password"], timeout_s = 1)
+            output_message(f"Connecting to {ip} ...")
+            device = await client.p100(ip)
+            device_info = await device.get_device_info()
+            device_name = device_info.to_dict().get("nickname", "Unknown")
+
+            p100[ip] = {
+                "name": device_name,
+                "object": device,
+                "action": {
+                        "on": device.on,
+                        "off": device.off,
+                        "info": device.get_device_info,
+                        "usage": device.get_device_usage
+                    },
+                "power": device_info.to_dict().get("device_on", False)
+            }
+        except Exception as e:
+            output_message(f"Failure on create a plug object on {ip}", Fore.RED, end="")
 
 async def power_on(device: dict):
     """
@@ -387,6 +393,10 @@ async def direct_power_control(device: dict, power_switch: bool = False, toggle_
                     await power_off(device)
 
             output_message(f"{device['name']} is {'On' if device['power'] else 'Off'}")
+
+            if power_interval == 0:
+                break
+
             await asyncio.sleep(power_interval)
 
     except KeyboardInterrupt as _:
@@ -419,7 +429,7 @@ async def main():
     parser.add_argument("--power_on", "-1", action="store_true", help="Turn on the plug")
     parser.add_argument("--power_off", "-0", action="store_true", help="Turn off the plug")
     parser.add_argument("--toggle", "-T", action="store_true", help="Toggle the power of the plug")
-    parser.add_argument("--power_interval", "-t", type=int, help="The interval time (sec) to toggle/power the power of the plug")
+    parser.add_argument("--power_interval", "-t", type=int, help="The interval time (sec) to toggle/power the power of the plug", default=0)
     args = parser.parse_args()
 
     try:
@@ -452,6 +462,7 @@ async def main():
         sys.exit(1)
 
     await register_p10x(tapo_info)
+
     if (args.power_on or args.power_off or args.toggle) and args.ip:
         task_power_handler = asyncio.create_task(direct_power_control(p100[args.ip], args.power_on, args.toggle, args.power_interval))
     elif args.interactive:
