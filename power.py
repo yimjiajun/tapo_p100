@@ -101,6 +101,7 @@ class TkinterDevice:
         Initialize the TkinterDevice class and setup the window
         running the main loop
         """
+        col = 5
         root = ThemedTk(theme='black')
         root.title(SUBJECT)
         root.protocol("WM_DELETE_WINDOW", root.quit)
@@ -122,12 +123,14 @@ class TkinterDevice:
         style.map('On.TButton', background=[('active', '#FFCC00')])
         style.configure('Off.TButton', foreground='yellow')
         style.map('Off.TButton', background=[('active', 'grey')])
+        style.configure('Invalid.TButton', foreground='black')
+        style.map('Invalid.TButton', background=[('disabled', 'grey')])
 
         for index, key in enumerate(p100):
             p100[key]["tkinter"] = {}
-            row_dev_title_align = int(index / 5 * 2)
-            row_dev_button_align = int(index / 5 * 2 + 1)
-            col_dev_align = int(index % 5)
+            row_dev_title_align = int(int(index / col + 1) * 2)
+            row_dev_button_align = row_dev_title_align + 1
+            col_dev_align = int(index % col)
             frame.grid_rowconfigure(row_dev_title_align, weight=1) # Title of device name
             frame.grid_rowconfigure(row_dev_button_align, weight=1) # Button of device
             frame.grid_columnconfigure(col_dev_align, weight=1) # column of device position
@@ -137,14 +140,18 @@ class TkinterDevice:
             label.config(anchor="center")
             p100[key]["tkinter"]["label"] = label
             # power behavior
-            power_status = "On" if p100[key]["power"] else "Off"
-            # Indicate next step of behavior when press button
-            power_button_display = "Turn Off" if power_status == "On" else "Turn On"
-            style_button_display = 'On.TButton' if power_status == "On" else "Off.TButton"
-            # Setup power button
-            button = ttk.Button(frame, text=power_button_display, width=10)
-            # button.config(command=self.button_handler, style=style_button_display)
-            button.config(command=lambda i=p100[key]: tkinter_insert_button_event(i), style=style_button_display)
+            if p100[key]["power"] is not None:
+                power_status = "On" if p100[key]["power"] else "Off"
+                # Indicate next step of behavior when press button
+                power_button_display = "Turn Off" if power_status == "On" else "Turn On"
+                style_button_display = 'On.TButton' if power_status == "On" else "Off.TButton"
+                button = ttk.Button(frame, text=power_button_display, width=10)
+                button.config(command=lambda i=p100[key]: tkinter_insert_button_event(i), style=style_button_display)
+            else:
+                power_button_display = 'Invalid'
+                style_button_display = 'Invalid.TButton'
+                button = ttk.Button(frame, text=power_button_display, width=10)
+                button.config(command=None, style=style_button_display)
             button.grid(row = row_dev_button_align, column = col_dev_align, sticky = "ns")
             p100[key]["tkinter"]["button"] = button
 
@@ -156,9 +163,13 @@ class TkinterDevice:
             label.config(anchor="center")
 
         frame.pack(expand=True, fill="both")
+        min_size = 200
+        max_size = 800
+        width = min_size * len(p100)
+        height = min_size * int(len(p100) / col)
         self.setup_window_at_center(root,
-                               max(200 * len(p100), 200),
-                               max(200 * int(len(p100) / 5 + 1), 200))
+                               max(min_size, min(width, max_size)),
+                               max(min_size, min(height, max_size)))
         root.mainloop()
 
 def output_message(msg: str, color: str = Fore.RESET, end: str = "\n"):
@@ -195,6 +206,9 @@ async def user_input_handler():
             output_message(f"{'Index':<6} {'Device Name':<20} {'Power Status'}")
             output_message(f'{"-" * 50}')
             for index, (key, value) in enumerate(p100.items(), start=1):
+                if value["object"] is None:
+                    output_message(f"{index:^6} {value['name']:<20} {'N/A':<3}", Fore.RED)
+                    continue
                 power_status = "On" if value["power"] else "Off"
                 output_message(f"{index:^6} {value['name']:<20} {power_status:<3}", Fore.LIGHTYELLOW_EX if value["power"] else Fore.RESET)
             output_message(f'{"-" * 50}')
@@ -289,8 +303,8 @@ async def register_p10x(info: dict):
             continue
 
         try:
-            client = ApiClient(info["username"], info["password"], timeout_s = 1)
-            output_message(f"Connecting to {ip} ...")
+            client = ApiClient(info["username"], info["password"], timeout_s = 2)
+            output_message(f"Connecting to {ip} ... ", end="")
             device = await client.p100(ip)
             device_info = await device.get_device_info()
             device_name = device_info.to_dict().get("nickname", "Unknown")
@@ -306,8 +320,15 @@ async def register_p10x(info: dict):
                     },
                 "power": device_info.to_dict().get("device_on", False)
             }
+            output_message(f"Success => {device_name}", Fore.GREEN)
         except Exception as e:
-            output_message(f"Failure on create a plug object on {ip}", Fore.RED, end="")
+            p100[ip] = {
+                "name": ip,
+                "object": None,
+                "action": None,
+                "power": None,
+            }
+            output_message("Failure", Fore.RED)
 
 async def power_on(device: dict):
     """
@@ -321,6 +342,9 @@ async def power_on(device: dict):
         - True: The plug is on
         - False: Failed to turn on the plug
     """
+    if device["object"] is None:
+        return False
+
     await device["action"]["on"]()
     device_info = await device["action"]["info"]()
     device["power"] = device_info.to_dict().get("device_on", False)
@@ -339,6 +363,9 @@ async def power_off(device: dict):
         - True: The plug is off
         - False: Failed to turn off the plug
     """
+    if device["object"] is None:
+        return False
+
     await device["action"]["off"]()
     device_info = await device["action"]["info"]()
     device["power"] = device_info.to_dict().get("device_on", True)
@@ -357,6 +384,9 @@ async def toggle(device: dict):
         - True: The plug is on
         - False: The plug is off
     """
+    if device["object"] is None:
+        return False
+
     device_info = await device["action"]["info"]()
     device["power"] = device_info.to_dict().get("device_on", True)
 
@@ -463,17 +493,26 @@ async def main():
 
     await register_p10x(tapo_info)
 
+    task_power_handlers = []
     if (args.power_on or args.power_off or args.toggle) and args.ip:
-        task_power_handler = asyncio.create_task(direct_power_control(p100[args.ip], args.power_on, args.toggle, args.power_interval))
+        for key, value in p100.items():
+            if value["object"] is None:
+                output_message(f"Invalid IP address {key}", Fore.RED)
+                continue
+
+            t = asyncio.create_task(direct_power_control(value, args.power_on, args.toggle, args.power_interval))
+            task_power_handlers.append(t)
     elif args.interactive:
-        task_power_handler = asyncio.create_task(user_input_handler())
+        t = asyncio.create_task(user_input_handler())
+        task_power_handlers.append(t)
     else:
-        task_power_handler = asyncio.create_task(tkinter_button_handler())
+        t = asyncio.create_task(tkinter_button_handler())
+        task_power_handlers.append(t)
         tkinter_dev = TkinterDevice()
         thread_tkinter = threading.Thread(target=tkinter_dev.initialize)
         thread_tkinter.start()
 
-    await asyncio.gather(task_power_handler)
+    await asyncio.gather(*task_power_handlers)
 
 if __name__ == "__main__":
     init(autoreset=True)
