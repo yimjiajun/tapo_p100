@@ -244,7 +244,7 @@ Username and password could be provided in three ways: (1) CLI or (2) JSON file 
 1. Create executable file
 
     ```bash
-    pyinstaller -w --onefile --add-data "docs/img/ami.png:." toggle_power.py
+    pyinstaller -w --onefile --add-data "docs/img/ami.png:." --name 'toggle_power' main.py
     ```
 
     > `--onefile`: generate single executable file.
