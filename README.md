@@ -2,7 +2,15 @@
 
 Toggle power application is depending on [Tapo](https://github.com/mihai-dinculescu/tapo). Some other remote plug is not supporting, please reference other package [Kasa](https://github.com/python-kasa/python-kasa).
 
-[[__TOC__]]
+* [Toggle Power - Tapo P100](#toggle-power---tapo-p100)
+   * [Installation](#installation)
+   * [Usage](#usage)
+   * [Guide](#guide)
+      * [User Interactive](#user-interactive)
+      * [GUI (Tkinter)](#gui-tkinter)
+      * [Add plug](#add-plug)
+      * [Username and Password](#username-and-password)
+   * [Generate Executable File](#generate-executable-file)
 
 <br>
 
