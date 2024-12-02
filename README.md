@@ -244,11 +244,13 @@ Username and password could be provided in three ways: (1) CLI or (2) JSON file 
 1. Create executable file
 
     ```bash
-    pyinstaller -w --onefile --add-data "docs/img/ami.png:." --name 'toggle_power' main.py
+    pyinstaller -w --onefile --icon "docs/img/ami.ico" --add-data "docs/img/ami.png:." --name 'toggle_power' main.py
     ```
 
     > `--onefile`: generate single executable file.
+    >
     > `--add-data`: add image file to the executable file. Image file will be copied to the same directory of the executable file.
+    >
     > `-w`: disable terminal window.
 
 1. Created executable file will generated in **dist/**, named as `toggle_power` or `toggle_power.exe`
