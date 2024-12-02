@@ -24,7 +24,7 @@ from tkinter import ttk, PhotoImage
 from ttkthemes import ThemedTk
 
 SUBJECT = "AMI EC Plug Control Panel"
-SETUP_FILE = os.path.join(os.path.expanduser("~"), ".ami_ec_remote_plug")
+SETUP_FILE = os.path.join(os.path.expanduser("~"), ".ami_ec_remote_plug.json")
 ICON_FILE = "ami.png"
 global p100
 global info
