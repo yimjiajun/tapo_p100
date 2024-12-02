@@ -323,7 +323,7 @@ async def register_p10x(info: dict):
             continue
 
         try:
-            client = ApiClient(info["username"], info["password"], timeout_s=2)
+            client = ApiClient(info["username"], info["password"], timeout_s=30)
             output_message(f"Connecting to {ip} ... ", end="")
             device = await client.p100(ip)
             device_info = await device.get_device_info()
