@@ -530,6 +530,9 @@ async def main():
     task_power_handlers = []
     if (args.power_on or args.power_off or args.toggle) and args.ip:
         for key, value in p100.items():
+            if key not in args.ip.split():
+                continue
+
             if value["object"] is None:
                 output_message(f"Invalid IP address {key}", Fore.RED)
                 continue
